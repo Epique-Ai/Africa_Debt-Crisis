@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Download, Presentation } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FileText, Presentation, Sparkles, Shield } from "lucide-react";
+import { fiscalScenarios } from "@/data/scenarioData";
 
 export const ReportSection = () => {
   return (
@@ -126,7 +126,57 @@ export const ReportSection = () => {
               </section>
 
               <section>
-                <h3 className="text-xl font-semibold text-foreground mb-3">7. Limitations & Future Work</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3">7. Premium Query Intelligence Insight</h3>
+                <div className="p-4 rounded-lg bg-primary/10 border border-primary/30 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold text-primary">AI-Selected High-Impact Query</span>
+                  </div>
+                  <p className="text-sm italic text-foreground mb-3">
+                    "Based on current trajectories, which 3 countries are most likely to require IMF intervention by 2026, 
+                    and what early warning indicators support this?"
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed text-sm">
+                    <strong className="text-foreground">Finding:</strong> Nigeria, Angola, and Kenya emerge as the highest 
+                    probability candidates for IMF intervention. Nigeria's critical revenue-to-debt servicing ratio 
+                    (debt service consuming 90%+ of federal revenue) makes its situation arithmetically unsustainable by mid-2025. 
+                    Angola faces commodity-driven vulnerability with 85% export dependence on oil, while Kenya exhibits 
+                    classic Eurobond rollover risk with $2B maturing in 2024-2025 and reserves covering only 3.8 months of imports.
+                  </p>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-foreground mb-3">8. Stress Test Scenario Analysis</h3>
+                <div className="p-4 rounded-lg bg-secondary/50 border border-border/50 mb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield className="h-4 w-4 text-accent" />
+                    <span className="text-sm font-semibold">5-Year Fiscal Scenario Projections</span>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4">
+                    {fiscalScenarios.map(scenario => (
+                      <div key={scenario.id} className="text-center p-2 rounded" style={{ backgroundColor: `${scenario.color}15` }}>
+                        <div className="text-xs font-semibold" style={{ color: scenario.color }}>
+                          {scenario.name.replace(' Scenario', '')}
+                        </div>
+                        <div className="text-lg font-mono font-bold text-foreground">
+                          {scenario.projections[4].debtToGDP}%
+                        </div>
+                        <div className="text-xs text-muted-foreground">Debt/GDP 2028</div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Our stress testing reveals significant divergence in fiscal outcomes. Under the <strong className="text-success">Reform Scenario</strong>, 
+                    aggressive policy implementation could reduce average debt-to-GDP to 47.5% by 2028. Conversely, the <strong className="text-destructive">High-Risk Scenario</strong> projects 
+                    debt levels exceeding 100% GDP, comparable to Latin America's 1980s debt crisis. The spread between best and worst 
+                    outcomes (55+ percentage points) underscores the critical importance of policy choices in the coming years.
+                  </p>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-foreground mb-3">9. Limitations & Future Work</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   This analysis is constrained by data availability gaps in several countries, 
                   particularly regarding contingent liabilities and state-owned enterprise debt. 
@@ -151,17 +201,17 @@ export const ReportSection = () => {
             <div className="grid md:grid-cols-2 gap-4">
               {[
                 { slide: 1, title: 'Title Slide', content: 'Project title, team, hackathon branding' },
-                { slide: 2, title: 'Executive Summary', content: 'Key findings in 3 bullet points' },
+                { slide: 2, title: 'Executive Summary', content: 'Key findings including stress test outcomes' },
                 { slide: 3, title: 'The Challenge', content: 'Africa debt landscape context, problem statement' },
                 { slide: 4, title: 'Data & Methodology', content: 'Sources, pipeline diagram, model overview' },
                 { slide: 5, title: 'Continental Overview', content: 'Heatmap of debt levels, regional comparison chart' },
                 { slide: 6, title: 'Risk Classification', content: 'Clustering results, top 10 at-risk table' },
-                { slide: 7, title: 'Deep Dive: Critical Cases', content: 'Zambia, Ghana, Egypt profiles' },
-                { slide: 8, title: 'Forecast Results', content: '5-year projection charts, early warnings' },
-                { slide: 9, title: 'Key Drivers Analysis', content: 'Revenue volatility, expenditure growth, external exposure' },
-                { slide: 10, title: 'Policy Recommendations', content: 'Tiered intervention framework' },
-                { slide: 11, title: 'Dashboard Demo', content: 'Live walkthrough of interactive tool' },
-                { slide: 12, title: 'Conclusion & Q&A', content: 'Summary, limitations, next steps' },
+                { slide: 7, title: 'Premium Query Insight', content: 'AI-selected analysis: IMF intervention probability' },
+                { slide: 8, title: 'Stress Test Scenarios', content: '5 fiscal scenarios with debt trajectory bands' },
+                { slide: 9, title: 'Deep Dive: Critical Cases', content: 'Nigeria, Angola, Kenya intervention risk profiles' },
+                { slide: 10, title: 'Forecast Results', content: '5-year projection charts, scenario comparisons' },
+                { slide: 11, title: 'Policy Recommendations', content: 'Scenario-informed tiered intervention framework' },
+                { slide: 12, title: 'Conclusion & Q&A', content: 'Summary, reform pathway, next steps' },
               ].map((item) => (
                 <div key={item.slide} className="flex gap-3 p-3 rounded-lg bg-secondary/50">
                   <div className="flex-shrink-0 w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary font-mono text-sm">

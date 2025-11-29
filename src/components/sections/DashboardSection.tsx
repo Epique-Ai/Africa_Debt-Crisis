@@ -4,6 +4,7 @@ import { RegionalComparison } from "@/components/dashboard/RegionalComparison";
 import { RiskTable } from "@/components/dashboard/RiskTable";
 import { ForecastChart } from "@/components/dashboard/ForecastChart";
 import { PolicyRecommendations } from "@/components/dashboard/PolicyRecommendations";
+import { ScenarioStressTest } from "@/components/dashboard/ScenarioStressTest";
 import { Wallet, TrendingDown, AlertTriangle, Globe } from "lucide-react";
 
 export const DashboardSection = () => {
@@ -68,9 +69,14 @@ export const DashboardSection = () => {
         </div>
 
         {/* Charts Row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <ForecastChart />
           <PolicyRecommendations />
+        </div>
+
+        {/* Stress Test Module */}
+        <div className="mb-6">
+          <ScenarioStressTest />
         </div>
       </div>
     </section>
