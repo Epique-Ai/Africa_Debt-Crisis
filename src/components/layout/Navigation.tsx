@@ -21,6 +21,7 @@ export const Navigation = ({ onNavigate }: NavigationProps) => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard' },
+    { id: 'stress-test', label: 'Scenarios' },
     { id: 'methodology', label: 'Methodology' },
     { id: 'report', label: 'Report' },
   ];
