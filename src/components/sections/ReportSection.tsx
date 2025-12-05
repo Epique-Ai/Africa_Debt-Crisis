@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Presentation, Sparkles, Shield } from "lucide-react";
+import { FileText, Sparkles, Shield } from "lucide-react";
 import { fiscalScenarios } from "@/data/scenarioData";
 
 export const ReportSection = () => {
@@ -189,43 +189,6 @@ export const ReportSection = () => {
           </CardContent>
         </Card>
 
-        {/* Presentation Outline */}
-        <Card variant="gradient">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Presentation className="h-5 w-5 text-accent" />
-              Presentation Deck Outline (12 Slides)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { slide: 1, title: 'Title Slide', content: 'Project title, team, hackathon branding' },
-                { slide: 2, title: 'Executive Summary', content: 'Key findings including stress test outcomes' },
-                { slide: 3, title: 'The Challenge', content: 'Africa debt landscape context, problem statement' },
-                { slide: 4, title: 'Data & Methodology', content: 'Sources, pipeline diagram, model overview' },
-                { slide: 5, title: 'Continental Overview', content: 'Heatmap of debt levels, regional comparison chart' },
-                { slide: 6, title: 'Risk Classification', content: 'Clustering results, top 10 at-risk table' },
-                { slide: 7, title: 'Premium Query Insight', content: 'AI-selected analysis: IMF intervention probability' },
-                { slide: 8, title: 'Stress Test Scenarios', content: '5 fiscal scenarios with debt trajectory bands' },
-                { slide: 9, title: 'Deep Dive: Critical Cases', content: 'Nigeria, Angola, Kenya intervention risk profiles' },
-                { slide: 10, title: 'Forecast Results', content: '5-year projection charts, scenario comparisons' },
-                { slide: 11, title: 'Policy Recommendations', content: 'Scenario-informed tiered intervention framework' },
-                { slide: 12, title: 'Conclusion & Q&A', content: 'Summary, reform pathway, next steps' },
-              ].map((item) => (
-                <div key={item.slide} className="flex gap-3 p-3 rounded-lg bg-secondary/50">
-                  <div className="flex-shrink-0 w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary font-mono text-sm">
-                    {item.slide}
-                  </div>
-                  <div>
-                    <div className="font-medium text-sm">{item.title}</div>
-                    <div className="text-xs text-muted-foreground">{item.content}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </section>
   );
