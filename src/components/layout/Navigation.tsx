@@ -4,10 +4,10 @@ import { Menu, X, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
-  onNavigate: (section: string) => void;
+  onNavigate?: (section: string) => void;
 }
 
-export const Navigation = ({ onNavigate }: NavigationProps) => {
+export const Navigation = ({ onNavigate }: NavigationProps = {}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -21,13 +21,19 @@ export const Navigation = ({ onNavigate }: NavigationProps) => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard' },
+    { id: 'live-updates', label: 'Live Feed' },
     { id: 'stress-test', label: 'Scenarios' },
     { id: 'methodology', label: 'Methodology' },
     { id: 'report', label: 'Report' },
   ];
 
   const handleNavClick = (section: string) => {
-    onNavigate(section);
+    if (onNavigate) {
+      onNavigate(section);
+    } else {
+      // If no onNavigate provided, navigate to home with hash
+      window.location.href = `/#${section}`;
+    }
     setIsMobileMenuOpen(false);
   };
 
