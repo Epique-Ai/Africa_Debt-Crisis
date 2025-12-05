@@ -3,6 +3,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { DashboardSection } from "@/components/sections/DashboardSection";
+import { LiveAlertsFeed } from "@/components/dashboard/LiveAlertsFeed";
 import { StressTestSection } from "@/components/sections/StressTestSection";
 import { MethodologySection } from "@/components/sections/MethodologySection";
 import { ReportSection } from "@/components/sections/ReportSection";
@@ -10,6 +11,7 @@ import { ReportSection } from "@/components/sections/ReportSection";
 const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const dashboardRef = useRef<HTMLDivElement>(null);
+  const liveUpdatesRef = useRef<HTMLDivElement>(null);
   const stressTestRef = useRef<HTMLDivElement>(null);
   const methodologyRef = useRef<HTMLDivElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
@@ -18,6 +20,7 @@ const Index = () => {
     const refs: Record<string, React.RefObject<HTMLDivElement>> = {
       hero: heroRef,
       dashboard: dashboardRef,
+      'live-updates': liveUpdatesRef,
       'stress-test': stressTestRef,
       methodology: methodologyRef,
       report: reportRef,
@@ -40,6 +43,11 @@ const Index = () => {
         
         <div ref={dashboardRef}>
           <DashboardSection />
+        </div>
+
+        {/* Live Intelligence Feed */}
+        <div ref={liveUpdatesRef}>
+          <LiveAlertsFeed />
         </div>
 
         <div ref={stressTestRef}>
