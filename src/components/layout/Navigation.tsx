@@ -19,6 +19,7 @@ export const Navigation = () => {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard' },
+    { path: '/live-feed', label: 'Live Feed' },
     { path: '/scenarios', label: 'Scenarios' },
     { path: '/methodology', label: 'Methodology' },
     { path: '/report', label: 'Report' },
