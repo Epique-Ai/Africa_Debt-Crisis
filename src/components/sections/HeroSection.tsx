@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp, FileText, ChevronDown } from "lucide-react";
+import { TrendingUp, FileText, ChevronDown, Shield, Zap, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
@@ -51,7 +51,7 @@ export const HeroSection = () => {
         </div>
 
         {/* Key Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '300ms' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16 animate-fade-in" style={{ animationDelay: '300ms' }}>
           {[
             { value: '15', label: 'Countries Analyzed' },
             { value: '5', label: 'Year Forecast' },
@@ -63,6 +63,45 @@ export const HeroSection = () => {
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
+        </div>
+
+        {/* Platform Features */}
+        <div className="max-w-5xl mx-auto animate-fade-in" style={{ animationDelay: '400ms' }}>
+          <h2 className="text-xl md:text-2xl font-semibold mb-8 text-foreground">
+            Your Complete Fiscal Intelligence Platform
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-xl glass text-left">
+              <div className="inline-flex p-3 rounded-lg bg-primary/10 text-primary mb-4">
+                <LineChart className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">Real-Time Analytics</h3>
+              <p className="text-sm text-muted-foreground">
+                Track debt-to-GDP ratios, fiscal deficits, and economic indicators with live data 
+                feeds from major financial institutions.
+              </p>
+            </div>
+            <div className="p-6 rounded-xl glass text-left">
+              <div className="inline-flex p-3 rounded-lg bg-primary/10 text-primary mb-4">
+                <Shield className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">Risk Assessment</h3>
+              <p className="text-sm text-muted-foreground">
+                AI-powered risk classification using K-Means clustering to categorize countries 
+                into Low, Medium, High, and Critical risk tiers.
+              </p>
+            </div>
+            <div className="p-6 rounded-xl glass text-left">
+              <div className="inline-flex p-3 rounded-lg bg-primary/10 text-primary mb-4">
+                <Zap className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">Scenario Modeling</h3>
+              <p className="text-sm text-muted-foreground">
+                Stress-test fiscal scenarios with 5-year projections using ARIMA and Prophet 
+                forecasting models for informed policy decisions.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Scroll indicator */}

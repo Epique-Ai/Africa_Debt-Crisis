@@ -1,7 +1,13 @@
-import { BarChart3, Github, Linkedin, Twitter } from "lucide-react";
+import { BarChart3, Github, Linkedin, Twitter, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
+  const dataSources = [
+    { name: "IMF World Economic Outlook", url: "https://www.imf.org/en/Publications/WEO" },
+    { name: "World Bank IDS", url: "https://www.worldbank.org/en/programs/debt-statistics" },
+    { name: "African Development Bank", url: "https://www.afdb.org/en" },
+  ];
+
   return (
     <footer className="py-12 px-4 border-t border-border/50 bg-secondary/20">
       <div className="container mx-auto max-w-7xl">
@@ -23,6 +29,7 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Sections</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
+              <li><Link to="/live-feed" className="hover:text-foreground transition-colors">Live Feed</Link></li>
               <li><Link to="/scenarios" className="hover:text-foreground transition-colors">Scenarios</Link></li>
               <li><Link to="/methodology" className="hover:text-foreground transition-colors">Methodology</Link></li>
               <li><Link to="/report" className="hover:text-foreground transition-colors">Report</Link></li>
@@ -32,10 +39,20 @@ export const Footer = () => {
           {/* Data Sources */}
           <div>
             <h4 className="font-semibold mb-4">Data Sources</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>IMF World Economic Outlook</li>
-              <li>World Bank IDS</li>
-              <li>African Development Bank</li>
+            <ul className="space-y-2 text-sm">
+              {dataSources.map((source) => (
+                <li key={source.name}>
+                  <a 
+                    href={source.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group"
+                  >
+                    {source.name}
+                    <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
