@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp, AlertTriangle, FileText, ChevronDown } from "lucide-react";
+import { TrendingUp, FileText, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
-interface HeroSectionProps {
-  onNavigate: (section: string) => void;
-}
-
-export const HeroSection = ({ onNavigate }: HeroSectionProps) => {
+export const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated background */}
@@ -25,43 +22,36 @@ export const HeroSection = ({ onNavigate }: HeroSectionProps) => {
       </div>
 
       <div className="relative z-10 container mx-auto px-4 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full glass animate-fade-in">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-          </span>
-          <span className="text-sm font-medium text-muted-foreground">
-            10Alytics Global Hackathon 2024
-          </span>
-        </div>
-
         {/* Main heading */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 animate-fade-in" style={{ animationDelay: '100ms' }}>
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 animate-fade-in">
           <span className="block text-foreground">Unraveling Africa's</span>
           <span className="block text-gradient mt-2">Sovereign Debt Crisis</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-fade-in" style={{ animationDelay: '200ms' }}>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-fade-in" style={{ animationDelay: '100ms' }}>
           A comprehensive analytical framework for understanding fiscal sustainability, 
           identifying risk factors, and charting paths toward economic resilience across the continent.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: '300ms' }}>
-          <Button variant="hero" size="xl" onClick={() => onNavigate('dashboard')}>
-            <TrendingUp className="h-5 w-5" />
-            Explore Dashboard
-          </Button>
-          <Button variant="glass" size="xl" onClick={() => onNavigate('methodology')}>
-            <FileText className="h-5 w-5" />
-            View Methodology
-          </Button>
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <Link to="/dashboard">
+            <Button variant="hero" size="xl">
+              <TrendingUp className="h-5 w-5" />
+              Explore Dashboard
+            </Button>
+          </Link>
+          <Link to="/methodology">
+            <Button variant="glass" size="xl">
+              <FileText className="h-5 w-5" />
+              View Methodology
+            </Button>
+          </Link>
         </div>
 
         {/* Key Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '400ms' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '300ms' }}>
           {[
             { value: '15', label: 'Countries Analyzed' },
             { value: '5', label: 'Year Forecast' },
@@ -76,13 +66,13 @@ export const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </div>
 
         {/* Scroll indicator */}
-        <button 
-          onClick={() => onNavigate('dashboard')}
+        <Link 
+          to="/dashboard"
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors animate-bounce"
         >
-          <span className="text-sm">Scroll to explore</span>
+          <span className="text-sm">Explore the data</span>
           <ChevronDown className="h-5 w-5" />
-        </button>
+        </Link>
       </div>
     </section>
   );

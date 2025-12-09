@@ -1,8 +1,10 @@
+import { Navigation } from "@/components/layout/Navigation";
+import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, BarChart3, Brain, Target, FileCode } from "lucide-react";
 
-export const MethodologySection = () => {
+const Methodology = () => {
   const pythonCode = `# Data Ingestion & Cleaning Pipeline
 import pandas as pd
 import numpy as np
@@ -186,73 +188,81 @@ def forecast_debt_trajectory(
     }`;
 
   return (
-    <section id="methodology" className="py-20 px-4 bg-secondary/20">
-      <div className="container mx-auto max-w-7xl">
-        {/* Section header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Methodology & Technical Framework
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive analytical pipeline combining data engineering, statistical modeling, 
-            and machine learning for fiscal risk assessment.
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <main className="pt-24 pb-20 px-4 bg-secondary/20">
+        <div className="container mx-auto max-w-7xl">
+          {/* Section header */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Methodology & Technical Framework
+            </h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Comprehensive analytical pipeline combining data engineering, statistical modeling, 
+              and machine learning for fiscal risk assessment.
+            </p>
+          </div>
 
-        {/* Methodology Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {[
-            { icon: Database, title: 'Data Ingestion', desc: 'Clean, normalize, and transform raw fiscal data' },
-            { icon: BarChart3, title: 'EDA & Visualization', desc: 'Uncover patterns, trends, and anomalies' },
-            { icon: Brain, title: 'Risk Modeling', desc: 'Cluster countries by fiscal vulnerability' },
-            { icon: Target, title: 'Forecasting', desc: 'Predict future debt trajectories' },
-          ].map((step, index) => (
-            <Card key={index} variant="gradient" className="text-center">
-              <CardContent className="pt-6">
-                <div className="inline-flex p-3 rounded-lg bg-primary/10 text-primary mb-4">
-                  <step.icon className="h-6 w-6" />
-                </div>
-                <h3 className="font-semibold mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+          {/* Methodology Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {[
+              { icon: Database, title: 'Data Ingestion', desc: 'Clean, normalize, and transform raw fiscal data' },
+              { icon: BarChart3, title: 'EDA & Visualization', desc: 'Uncover patterns, trends, and anomalies' },
+              { icon: Brain, title: 'Risk Modeling', desc: 'Cluster countries by fiscal vulnerability' },
+              { icon: Target, title: 'Forecasting', desc: 'Predict future debt trajectories' },
+            ].map((step, index) => (
+              <Card key={index} variant="gradient" className="text-center">
+                <CardContent className="pt-6">
+                  <div className="inline-flex p-3 rounded-lg bg-primary/10 text-primary mb-4">
+                    <step.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-        {/* Code Tabs */}
-        <Card variant="gradient">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileCode className="h-5 w-5 text-primary" />
-              Python Implementation
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="data" className="w-full">
-              <TabsList className="bg-secondary mb-4">
-                <TabsTrigger value="data">Data Pipeline</TabsTrigger>
-                <TabsTrigger value="risk">Risk Model</TabsTrigger>
-                <TabsTrigger value="forecast">Forecasting</TabsTrigger>
-              </TabsList>
-              <TabsContent value="data">
-                <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
-                  <code className="text-primary/90 font-mono">{pythonCode}</code>
-                </pre>
-              </TabsContent>
-              <TabsContent value="risk">
-                <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
-                  <code className="text-primary/90 font-mono">{riskModelCode}</code>
-                </pre>
-              </TabsContent>
-              <TabsContent value="forecast">
-                <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
-                  <code className="text-primary/90 font-mono">{forecastCode}</code>
-                </pre>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
-    </section>
+          {/* Code Tabs */}
+          <Card variant="gradient">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileCode className="h-5 w-5 text-primary" />
+                Python Implementation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="data" className="w-full">
+                <TabsList className="bg-secondary mb-4">
+                  <TabsTrigger value="data">Data Pipeline</TabsTrigger>
+                  <TabsTrigger value="risk">Risk Model</TabsTrigger>
+                  <TabsTrigger value="forecast">Forecasting</TabsTrigger>
+                </TabsList>
+                <TabsContent value="data">
+                  <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
+                    <code className="text-primary/90 font-mono">{pythonCode}</code>
+                  </pre>
+                </TabsContent>
+                <TabsContent value="risk">
+                  <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
+                    <code className="text-primary/90 font-mono">{riskModelCode}</code>
+                  </pre>
+                </TabsContent>
+                <TabsContent value="forecast">
+                  <pre className="p-4 rounded-lg bg-background overflow-x-auto text-sm">
+                    <code className="text-primary/90 font-mono">{forecastCode}</code>
+                  </pre>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
   );
 };
+
+export default Methodology;

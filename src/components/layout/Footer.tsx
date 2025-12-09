@@ -1,4 +1,5 @@
 import { BarChart3, Github, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -7,13 +8,13 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 text-lg font-bold mb-4">
+            <Link to="/" className="flex items-center gap-2 text-lg font-bold mb-4">
               <BarChart3 className="h-6 w-6 text-primary" />
               <span>AfricaDebt Analytics</span>
-            </div>
+            </Link>
             <p className="text-sm text-muted-foreground max-w-md">
-              A comprehensive analytical framework for understanding Africa's sovereign debt crisis, 
-              developed for the 10Alytics Global Hackathon 2024.
+              A comprehensive analytical framework for understanding Africa's sovereign debt crisis 
+              and identifying paths to fiscal sustainability.
             </p>
           </div>
 
@@ -21,9 +22,10 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Sections</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#dashboard" className="hover:text-foreground transition-colors">Dashboard</a></li>
-              <li><a href="#methodology" className="hover:text-foreground transition-colors">Methodology</a></li>
-              <li><a href="#report" className="hover:text-foreground transition-colors">Report</a></li>
+              <li><Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
+              <li><Link to="/scenarios" className="hover:text-foreground transition-colors">Scenarios</Link></li>
+              <li><Link to="/methodology" className="hover:text-foreground transition-colors">Methodology</Link></li>
+              <li><Link to="/report" className="hover:text-foreground transition-colors">Report</Link></li>
             </ul>
           </div>
 
@@ -40,7 +42,7 @@ export const Footer = () => {
 
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 10Alytics Global Hackathon. Built for analytical purposes.
+            © 2024 AfricaDebt Analytics. Built for analytical purposes.
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
