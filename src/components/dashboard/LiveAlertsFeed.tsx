@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,12 @@ import {
   ArrowDownRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { liveAlerts, rlForecasts, repaymentSchedule, type AlertStatus, type LiveAlert } from "@/data/liveAlertsData";
+import { useAlerts } from "@/hooks/useAlerts";
+import { useLatestFiscalMetrics } from "@/hooks/useCountryFiscalData";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+
+type AlertStatus = 'green' | 'yellow' | 'red';
 
 const statusConfig: Record<AlertStatus, { color: string; bg: string; label: string }> = {
   green: { color: 'text-success', bg: 'bg-success/20 border-success/30', label: 'Positive' },
@@ -26,7 +30,7 @@ const statusConfig: Record<AlertStatus, { color: string; bg: string; label: stri
   red: { color: 'text-destructive', bg: 'bg-destructive/20 border-destructive/30', label: 'Alert' },
 };
 
-const categoryIcons = {
+const categoryIcons: Record<string, string> = {
   debt: '💰',
   risk: '⚠️',
   forecast: '📊',
@@ -34,33 +38,48 @@ const categoryIcons = {
   market: '📈',
 };
 
-const AlertCard = ({ alert }: { alert: LiveAlert }) => {
-  const config = statusConfig[alert.status];
+const AlertCard = ({ alert }: { alert: any }) => {
+  // Determine status based on priority
+  const getStatus = (priority: string | null): AlertStatus => {
+    switch (priority?.toLowerCase()) {
+      case 'high': return 'red';
+      case 'medium': return 'yellow';
+      default: return 'green';
+    }
+  };
+  
+  const status = getStatus(alert.priority);
+  const config = statusConfig[status];
+  const isNew = new Date(alert.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
   
   return (
     <div className={cn(
       "p-4 rounded-lg border transition-all hover:shadow-md",
       config.bg,
-      alert.isNew && "ring-2 ring-primary/50"
+      isNew && "ring-2 ring-primary/50"
     )}>
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-lg">{categoryIcons[alert.category]}</span>
+          <span className="text-lg">{categoryIcons[alert.category] || '📌'}</span>
           <div>
             <div className="flex items-center gap-2">
-              <Link 
-                to={`/country/${alert.country.toLowerCase().replace(' ', '-')}`}
-                className="font-semibold text-foreground hover:text-primary transition-colors"
-              >
-                {alert.country}
-              </Link>
-              {alert.isNew && (
+              {alert.country ? (
+                <Link 
+                  to={`/country/${alert.country.name?.toLowerCase().replace(' ', '-')}`}
+                  className="font-semibold text-foreground hover:text-primary transition-colors"
+                >
+                  {alert.country.name}
+                </Link>
+              ) : (
+                <span className="font-semibold text-foreground">{alert.title}</span>
+              )}
+              {isNew && (
                 <Badge variant="outline" className="text-xs bg-primary/20 text-primary border-primary/30">
                   NEW
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">{alert.metric}</p>
+            <p className="text-sm text-muted-foreground">{alert.title}</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
@@ -69,51 +88,60 @@ const AlertCard = ({ alert }: { alert: LiveAlert }) => {
           </Badge>
           <span className="text-xs text-muted-foreground flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {new Date(alert.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            {new Date(alert.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
           </span>
         </div>
       </div>
       <p className="text-sm text-foreground/90 leading-relaxed">
-        {alert.insight}
+        {alert.description}
       </p>
       <div className="mt-3 flex items-center justify-between">
         <Badge variant="outline" className="text-xs capitalize">
           {alert.category}
         </Badge>
-        <Link 
-          to={`/country/${alert.country.toLowerCase().replace(' ', '-')}`}
-          className="text-xs text-primary hover:underline flex items-center gap-1"
-        >
-          View Country Profile <ChevronRight className="h-3 w-3" />
-        </Link>
+        {alert.country && (
+          <Link 
+            to={`/country/${alert.country.name?.toLowerCase().replace(' ', '-')}`}
+            className="text-xs text-primary hover:underline flex items-center gap-1"
+          >
+            View Country Profile <ChevronRight className="h-3 w-3" />
+          </Link>
+        )}
       </div>
     </div>
   );
 };
 
-const ForecastCard = ({ forecast }: { forecast: typeof rlForecasts[0] }) => {
+const ForecastCard = ({ forecast }: { forecast: any }) => {
+  const currentValue = forecast.debt_to_gdp || 0;
+  const gdpGrowth = forecast.gdp_growth || 0;
+  
+  const trend = gdpGrowth > 3 ? 'improving' : gdpGrowth < 1 ? 'deteriorating' : 'stable';
+  
   const trendConfig = {
     improving: { icon: TrendingDown, color: 'text-success', label: 'Improving' },
     stable: { icon: Minus, color: 'text-warning', label: 'Stable' },
     deteriorating: { icon: TrendingUp, color: 'text-destructive', label: 'Deteriorating' },
   };
   
-  const config = trendConfig[forecast.trend];
+  const config = trendConfig[trend];
   const Icon = config.icon;
-  const change2024 = forecast.forecast2024 - forecast.currentValue;
-  const change2025 = forecast.forecast2025 - forecast.forecast2024;
+  
+  // Simple forecast projection
+  const forecast2024 = currentValue * (1 + (gdpGrowth > 2 ? -0.02 : 0.03));
+  const forecast2025 = forecast2024 * (1 + (gdpGrowth > 2 ? -0.02 : 0.03));
   
   return (
     <div className="p-4 rounded-lg border bg-card/50 hover:bg-card/80 transition-all">
       <div className="flex items-start justify-between mb-3">
         <div>
           <Link 
-            to={`/country/${forecast.country.toLowerCase().replace(' ', '-')}`}
+            to={`/country/${forecast.countries?.name?.toLowerCase().replace(' ', '-')}`}
             className="font-semibold text-foreground hover:text-primary transition-colors"
           >
-            {forecast.country}
+            {forecast.countries?.name || 'Unknown'}
           </Link>
-          <p className="text-sm text-muted-foreground">{forecast.metric}</p>
+          <p className="text-sm text-muted-foreground">Debt/GDP</p>
         </div>
         <div className={cn("flex items-center gap-1", config.color)}>
           <Icon className="h-4 w-4" />
@@ -124,13 +152,13 @@ const ForecastCard = ({ forecast }: { forecast: typeof rlForecasts[0] }) => {
       <div className="grid grid-cols-3 gap-2 mb-3">
         <div className="text-center p-2 rounded bg-muted/50">
           <p className="text-xs text-muted-foreground">Current</p>
-          <p className="text-lg font-bold">{forecast.currentValue}%</p>
+          <p className="text-lg font-bold">{currentValue.toFixed(1)}%</p>
         </div>
         <div className="text-center p-2 rounded bg-muted/50">
-          <p className="text-xs text-muted-foreground">2024F</p>
+          <p className="text-xs text-muted-foreground">2025F</p>
           <p className="text-lg font-bold flex items-center justify-center">
-            {forecast.forecast2024}%
-            {change2024 > 0 ? (
+            {forecast2024.toFixed(1)}%
+            {forecast2024 > currentValue ? (
               <ArrowUpRight className="h-3 w-3 text-destructive ml-1" />
             ) : (
               <ArrowDownRight className="h-3 w-3 text-success ml-1" />
@@ -138,10 +166,10 @@ const ForecastCard = ({ forecast }: { forecast: typeof rlForecasts[0] }) => {
           </p>
         </div>
         <div className="text-center p-2 rounded bg-muted/50">
-          <p className="text-xs text-muted-foreground">2025F</p>
+          <p className="text-xs text-muted-foreground">2026F</p>
           <p className="text-lg font-bold flex items-center justify-center">
-            {forecast.forecast2025}%
-            {change2025 > 0 ? (
+            {forecast2025.toFixed(1)}%
+            {forecast2025 > forecast2024 ? (
               <ArrowUpRight className="h-3 w-3 text-destructive ml-1" />
             ) : (
               <ArrowDownRight className="h-3 w-3 text-success ml-1" />
@@ -153,10 +181,12 @@ const ForecastCard = ({ forecast }: { forecast: typeof rlForecasts[0] }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Activity className="h-3 w-3 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">Confidence: {forecast.confidence}%</span>
+          <span className="text-xs text-muted-foreground">
+            Risk: {forecast.risk_level || 'N/A'}
+          </span>
         </div>
         <Link 
-          to={`/country/${forecast.country.toLowerCase().replace(' ', '-')}`}
+          to={`/country/${forecast.countries?.name?.toLowerCase().replace(' ', '-')}`}
           className="text-xs text-primary hover:underline flex items-center gap-1"
         >
           Details <ChevronRight className="h-3 w-3" />
@@ -167,7 +197,17 @@ const ForecastCard = ({ forecast }: { forecast: typeof rlForecasts[0] }) => {
 };
 
 const RepaymentScheduleTable = () => {
-  const riskColors = {
+  // Using static data for repayment schedule as it's specialized data
+  const repaymentSchedule = [
+    { country: 'Kenya', year: 2024, quarter: 'Q2', amount: 2000, currency: 'USD', type: 'Eurobond', riskLevel: 'high' },
+    { country: 'Nigeria', year: 2024, quarter: 'Q3', amount: 1500, currency: 'USD', type: 'Eurobond', riskLevel: 'medium' },
+    { country: 'Egypt', year: 2024, quarter: 'Q1', amount: 3200, currency: 'USD', type: 'Bilateral', riskLevel: 'high' },
+    { country: 'Ghana', year: 2024, quarter: 'Q4', amount: 800, currency: 'USD', type: 'Multilateral', riskLevel: 'low' },
+    { country: 'South Africa', year: 2024, quarter: 'Q2', amount: 2500, currency: 'USD', type: 'Domestic', riskLevel: 'medium' },
+    { country: 'Angola', year: 2024, quarter: 'Q3', amount: 1800, currency: 'USD', type: 'Bilateral', riskLevel: 'medium' },
+  ];
+
+  const riskColors: Record<string, string> = {
     low: 'bg-success/20 text-success',
     medium: 'bg-warning/20 text-warning',
     high: 'bg-destructive/20 text-destructive',
@@ -186,7 +226,7 @@ const RepaymentScheduleTable = () => {
           </tr>
         </thead>
         <tbody>
-          {repaymentSchedule.slice(0, 6).map((item, idx) => (
+          {repaymentSchedule.map((item, idx) => (
             <tr key={idx} className="border-b border-border/30 hover:bg-muted/30">
               <td className="py-2 px-3">
                 <Link 
@@ -216,10 +256,15 @@ const RepaymentScheduleTable = () => {
 
 export const LiveAlertsFeed = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const { data: alerts, isLoading: alertsLoading } = useAlerts(20);
+  const { data: fiscalData, isLoading: fiscalLoading } = useLatestFiscalMetrics();
   
-  const filteredAlerts = selectedCategory === 'all' 
-    ? liveAlerts 
-    : liveAlerts.filter(a => a.category === selectedCategory);
+  const filteredAlerts = useMemo(() => {
+    if (!alerts) return [];
+    return selectedCategory === 'all' 
+      ? alerts 
+      : alerts.filter(a => a.category === selectedCategory);
+  }, [alerts, selectedCategory]);
   
   return (
     <section id="live-updates" className="py-16 px-4">
@@ -232,7 +277,7 @@ export const LiveAlertsFeed = () => {
               <h2 className="text-2xl md:text-3xl font-bold">Live Intelligence Feed</h2>
             </div>
             <p className="text-muted-foreground">
-              Real-time fiscal alerts, RL-driven forecasts, and debt monitoring across Africa
+              Real-time fiscal alerts, forecasts, and debt monitoring across Africa
             </p>
           </div>
           <Badge variant="outline" className="hidden md:flex items-center gap-1 text-success border-success/30">
@@ -249,7 +294,7 @@ export const LiveAlertsFeed = () => {
             </TabsTrigger>
             <TabsTrigger value="forecasts" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
-              <span className="hidden sm:inline">RL Forecasts</span>
+              <span className="hidden sm:inline">Forecasts</span>
             </TabsTrigger>
             <TabsTrigger value="schedule" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
@@ -274,11 +319,23 @@ export const LiveAlertsFeed = () => {
             </div>
             
             {/* Alerts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredAlerts.map((alert) => (
-                <AlertCard key={alert.id} alert={alert} />
-              ))}
-            </div>
+            {alertsLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-40" />
+                ))}
+              </div>
+            ) : filteredAlerts.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No alerts available
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredAlerts.map((alert) => (
+                  <AlertCard key={alert.id} alert={alert} />
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="forecasts" className="space-y-4">
@@ -286,18 +343,26 @@ export const LiveAlertsFeed = () => {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Activity className="h-5 w-5 text-primary" />
-                  RL Agent Debt Trajectory Forecasts
+                  Debt Trajectory Forecasts
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Machine learning projections with confidence intervals and key risk drivers
+                  Projections based on current fiscal data and economic indicators
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {rlForecasts.map((forecast) => (
-                    <ForecastCard key={forecast.country} forecast={forecast} />
-                  ))}
-                </div>
+                {fiscalLoading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[...Array(6)].map((_, i) => (
+                      <Skeleton key={i} className="h-48" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {fiscalData?.slice(0, 6).map((forecast) => (
+                      <ForecastCard key={forecast.id} forecast={forecast} />
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
