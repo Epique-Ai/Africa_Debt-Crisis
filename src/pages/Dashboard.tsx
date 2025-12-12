@@ -7,7 +7,8 @@ import { RiskTable } from "@/components/dashboard/RiskTable";
 import { ForecastChart } from "@/components/dashboard/ForecastChart";
 import { PolicyRecommendations } from "@/components/dashboard/PolicyRecommendations";
 import { LiveAlertsFeed } from "@/components/dashboard/LiveAlertsFeed";
-import { Wallet, TrendingDown, AlertTriangle, Globe, Loader2 } from "lucide-react";
+import { RLPipelineControl } from "@/components/dashboard/RLPipelineControl";
+import { Wallet, TrendingDown, AlertTriangle, Globe } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -91,6 +92,11 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <ForecastChart />
             <PolicyRecommendations />
+          </div>
+
+          {/* RL Pipeline Control */}
+          <div className="mb-6">
+            <RLPipelineControl />
           </div>
 
           {/* Live Feed */}
