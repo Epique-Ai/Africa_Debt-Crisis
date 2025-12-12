@@ -234,6 +234,53 @@ export type Database = {
           },
         ]
       }
+      debt_repayments: {
+        Row: {
+          amount: number
+          country_id: string | null
+          created_at: string
+          currency: string
+          due_date: string | null
+          id: string
+          quarter: string
+          risk_level: string
+          type: string
+          year: number
+        }
+        Insert: {
+          amount: number
+          country_id?: string | null
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          quarter: string
+          risk_level?: string
+          type: string
+          year: number
+        }
+        Update: {
+          amount?: number
+          country_id?: string | null
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          quarter?: string
+          risk_level?: string
+          type?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "debt_repayments_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       policy_recommendations: {
         Row: {
           category: string
